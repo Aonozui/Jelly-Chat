@@ -1,14 +1,19 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const moment = require('moment');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+});
 
 let users = {};
 let messages = [];
@@ -29,8 +34,6 @@ io.on('connection', (socket) => {
       socket.emit('chat message', msg);
     });
   });
-
- const moment = require('moment'); // install dengan npm install moment
 
 socket.on('chat message', (msg) => {
   msg.id = uuidv4();
